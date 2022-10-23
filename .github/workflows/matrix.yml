@@ -25,10 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        jdk: [8, 11, 14]
+        python: [2.7, 3.6, 3.8]
     runs-on: ${{ matrix.os }}
-    env:
-      JDK_VERSION:  ${{ matrix.jdk }}
 
     steps:
       - name: Checkout Repo
@@ -37,6 +35,14 @@ jobs:
       - name: Get Public IPv4
         shell: pwsh
         run: Invoke-RestMethod 'https://api.ipify.org?format=json'
-
-      - name: Get local IPv4
-        run: ip -br a
+     
+      - name:  Get local IPv4
+        run:   |
+               if [ "$RUNNER_OS" == "Linux" ]; then
+                    ip -br a
+               elif [ "$RUNNER_OS" == "Windows" ]; then
+                    ipconfig /all
+               else
+                    /sbin/ifconfig
+               fi
+        shell: bash
