@@ -103,4 +103,11 @@ jobs:
           cd ./DownloadFiles
           cat ../Downloads.txt | parallel --gnu "wget {}"
 
+      - name: Get all Files Hashes - Macos
+        if: matrix.os == 'macos-latest'
+        shell: pwsh
+        run: |
+          Get-ChildItem ./DownloadFiles -File | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('/')[-1]}} | Export-Csv -Path ./macos_hash.csv -Encoding UTF8
+
+
 
