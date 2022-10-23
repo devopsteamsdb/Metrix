@@ -114,5 +114,9 @@ jobs:
         with:
           name: macos-hash
           path: ./macos_hash.csv
-
+          
+  compare_hash:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
