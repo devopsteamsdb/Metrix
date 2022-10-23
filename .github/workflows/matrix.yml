@@ -109,5 +109,10 @@ jobs:
         run: |
           Get-ChildItem ./DownloadFiles -File | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('/')[-1]}} | Export-Csv -Path ./macos_hash.csv -Encoding UTF8
 
+      - uses: actions/upload-artifact@v2
+        if: matrix.os == 'macos-latest'
+        with:
+          name: macos-hash
+          path: ./macos_hash.csv
 
 
