@@ -9,7 +9,7 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - 'README.md'
-      - '.github/workflows/docker-image.yml'
+      - '.github/workflows/matrix.yml'
       - './docs/*'
       - 'history.txt'
   pull_request:
