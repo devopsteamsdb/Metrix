@@ -121,14 +121,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - uses: actions/download-artifact@v2
+      - name: download-artifact - linux-hash
+        uses: actions/download-artifact@v2
         with:
           name: linux-hash
- 
-      - uses: actions/download-artifact@v2
+
+      - name: download-artifact - macos-hash
+        uses: actions/download-artifact@v2
         with:
           name: macos-hash
-          
-      - uses: actions/download-artifact@v2
+      
+      - name: download-artifact - windows-hash
+        uses: actions/download-artifact@v2
         with:
           name: windows-hash
+
+      - name: get all files in current directory
+        run: dir
