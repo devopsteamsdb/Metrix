@@ -36,8 +36,14 @@ jobs:
         shell: pwsh
         run: Invoke-RestMethod 'https://api.ipify.org?format=json'
      
-      - name: Get Local IPv4
+      - name: Get Local IPv4 - Windows
         if: matrix.os == 'windows-latest'
         run:   |
-           Get-NetIPAddress -AddressFamily IPV4
+           (Get-NetIPAddress -AddressFamily IPV4).IPAddress
+        shell: pwsh
+        
+      - name: Get Local IPv4 - Linux
+        if: matrix.os != 'windows-latest'
+        run:   |
+           ifconfig
         shell: pwsh
