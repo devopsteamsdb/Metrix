@@ -1,12 +1,17 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Metrix Dvora 2 GO :)
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - '.github/workflows/docker-image.yml'
+      - './docs/*'
+      - 'history.txt'
   pull_request:
     branches: [ "main" ]
 
@@ -28,3 +33,11 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        
+      - name: Get Public IPv4
+        shell: pwsh
+        run: Invoke-RestMethod 'https://api.ipify.org?format=json'
+
+      - name: Get local IPv4
+        shell: pwsh
+        run: Get-NetIPConfiguration | select InterfaceAlias,IPv4Address
