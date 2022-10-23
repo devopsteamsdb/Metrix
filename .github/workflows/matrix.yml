@@ -56,3 +56,25 @@ jobs:
         shell: pwsh
         run: new-item DownloadFiles -ItemType directory -ErrorAction SilentlyContinue
 
+      - name: Download files
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: cat Downloads.txt | foreach { Start-BitsTransfer $_ -Destination .\DownloadFiles}
+
+      - name: Get all Files Hashes
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          Get-ChildItem .\DownloadFiles -File | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('\')[-1]}} | Export-Csv -Path .\windows_hash.csv -Encoding UTF8
+
+      - name: Get all Files Hashes
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          cat .\windows_hash.csv
+
+      - uses: actions/upload-artifact@v2
+        if: matrix.os == 'windows-latest'
+        with:
+          name: windows-hash
+          path: .\windows_hash.csv
