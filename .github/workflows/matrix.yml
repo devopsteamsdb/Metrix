@@ -90,7 +90,6 @@ jobs:
         shell: pwsh
         run: |
           Get-ChildItem ./DownloadFiles -File | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('/')[-1]}} | Export-Csv -Path ./linux_hash.csv -Encoding UTF8
-          cat .\linux_hash.csv 
           
       - name: Download all links from file - Macos
         if: matrix.os == 'macos-latest'
