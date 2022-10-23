@@ -39,5 +39,4 @@ jobs:
         run: Invoke-RestMethod 'https://api.ipify.org?format=json'
 
       - name: Get local IPv4
-        shell: pwsh
-        run: Get-NetIPConfiguration | select InterfaceAlias,IPv4Address
+        run: ip -br a
