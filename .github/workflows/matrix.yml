@@ -145,3 +145,17 @@ jobs:
           $ReferenceObject = Import-Csv -Path linux_hash.csv
           $DifferenceObject = Import-Csv -Path windows_hash.csv
           Compare-Object -ReferenceObject $ReferenceObject -DifferenceObject $DifferenceObject -IncludeEqual -Property hash,File | Format-List
+
+      - name: Compare linux and macos hashes
+        shell: pwsh
+        run: | 
+          $ReferenceObject = Import-Csv -Path linux_hash.csv
+          $DifferenceObject = Import-Csv -Path macos_hash.csv
+          Compare-Object -ReferenceObject $ReferenceObject -DifferenceObject $DifferenceObject -IncludeEqual -Property hash,File | Format-List
+
+      - name: Compare windows and macos hashes
+        shell: pwsh
+        run: | 
+          $ReferenceObject = Import-Csv -Path windows_hash.csv
+          $DifferenceObject = Import-Csv -Path macos_hash.csv
+          Compare-Object -ReferenceObject $ReferenceObject -DifferenceObject $DifferenceObject -IncludeEqual -Property hash,File | Format-List
