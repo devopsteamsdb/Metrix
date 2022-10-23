@@ -120,3 +120,15 @@ jobs:
     needs: [theMatrix]
     steps:
       - uses: actions/checkout@v2
+      
+      - uses: actions/download-artifact@v2
+        with:
+          name: linux-hash
+ 
+      - uses: actions/download-artifact@v2
+        with:
+          name: macos-hash
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: windows-hash
