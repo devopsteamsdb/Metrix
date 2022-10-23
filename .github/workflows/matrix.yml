@@ -52,3 +52,7 @@ jobs:
            ifconfig
         shell: pwsh
         
+      - name: Create download folder
+        shell: pwsh
+        run: new-item DownloadFiles -ItemType directory -ErrorAction SilentlyContinue
+
