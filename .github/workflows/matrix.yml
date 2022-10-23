@@ -38,11 +38,13 @@ jobs:
      
       - name:  Get local IPv4
         run:   |
-               if [ "$RUNNER_OS" == "Linux" ]; then
+               if ( "$RUNNER_OS" == "Linux" ){
                     ip -br a
-               elif [ "$RUNNER_OS" == "Windows" ]; then
+               }
+               elseif ("$RUNNER_OS" == "Windows" ){
                     ipconfig /all
-               else
+               } 
+               else {
                     /sbin/ifconfig
-               fi
+               }
         shell: pwsh
