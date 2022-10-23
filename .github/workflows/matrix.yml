@@ -38,13 +38,5 @@ jobs:
      
       - name:  Get local IPv4
         run:   |
-               if ( "$RUNNER_OS" == "Linux" ){
-                    ip -br a
-               }
-               elseif ("$RUNNER_OS" == "Windows" ){
-                    ipconfig /all
-               } 
-               else {
-                    /sbin/ifconfig
-               }
+           Get-NetIPAddress -AddressFamily IPV4
         shell: pwsh
