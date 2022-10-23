@@ -45,4 +45,4 @@ jobs:
                else
                     /sbin/ifconfig
                fi
-        shell: bash
+        shell: pwsh
