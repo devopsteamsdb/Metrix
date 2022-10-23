@@ -138,3 +138,10 @@ jobs:
 
       - name: get all files in current directory
         run: dir
+        
+      - name: Compare linux and windows hashes
+        shell: pwsh
+        run: | 
+          $ReferenceObject = Import-Csv -Path linux_hash.csv
+          $DifferenceObject = Import-Csv -Path windows_hash.csv
+          Compare-Object -ReferenceObject $ReferenceObject -DifferenceObject $DifferenceObject -IncludeEqual -Property hash,File | Format-List
