@@ -86,7 +86,7 @@ jobs:
           cat ../Downloads.txt | parallel --gnu "wget {}"
 
       - name: Download all links from file - Macos
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'macos-latest'
         run: |
           brew install parallel
           cd ./DownloadFiles
