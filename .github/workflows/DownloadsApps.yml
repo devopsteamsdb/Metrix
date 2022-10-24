@@ -55,5 +55,9 @@ jobs:
           }
           Get-ChildItem .\DownloadFiles -File -Recurse | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('\')[-1]}} | Export-Csv -Path .\windows_hash.csv -Encoding UTF8
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: windows-hash
+          path: .\windows_hash.csv
           
         
