@@ -38,3 +38,14 @@ jobs:
       - name: Create download folder
         shell: pwsh
         run: new-item DownloadFiles -ItemType directory -ErrorAction SilentlyContinue
+
+      - name: Create download folder
+        shell: pwsh
+        run: new-item DownloadApps -ItemType directory -ErrorAction SilentlyContinue
+        
+      - name: Download files - CSV
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $ImportCSV = Import-Csv DownloadsApps.csv
+        
