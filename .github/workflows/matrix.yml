@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - 'README.md'
       - '.github/workflows/matrix.yml'
+      - '.github/workflows/DownloadsApps.yml'
       - '.github/workflows/DownloadsApps.csv'
       - './docs/*'
       - 'history.txt'
