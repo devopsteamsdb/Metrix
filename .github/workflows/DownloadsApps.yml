@@ -51,13 +51,50 @@ jobs:
           {
             Start-BitsTransfer $CSV.AppUrl -Destination .\DownloadApps 
             $Item = Get-ChildItem .\DownloadApps 
-            Start-Process -Wait $Item.FullName -ArgumentList $CSV.ArgumentList
+            $Process = Start-Process $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
           }
+          
+      - name: Register Event for monitor directory changes
+        shell: pwsh
+        run: |
+          $filewatcher = New-Object System.IO.FileSystemWatcher
+          $filewatcher.Path = (Get-Item DownloadFiles).FullName
+          $filewatcher.Filter = "*.*"
+          #include subdirectories $true/$false
+          $filewatcher.IncludeSubdirectories = $true
+          $filewatcher.EnableRaisingEvents = $true 
+
+          $writeaction = { 
+            $path = $Event.SourceEventArgs.FullPath
+            $changeType = $Event.SourceEventArgs.ChangeType
+            $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
+            $logline = "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count), $path"
+            Write-Host $logline
+          }
+
+          Get-EventSubscriber  | Unregister-Event
+          Register-ObjectEvent $filewatcher 'Created' -Action $writeaction
+          
+      - name: Wait for downloads to finishe
+        shell: pwsh
+        run: |
+          while ($true) {
+            Start-Sleep 5
+            try
+            {
+              Get-Process -Id $Process.Id -ErrorAction Stop | Out-Null
+            }
+            catch
+            {
+              Write-Host "Download finished"
+              break
+            }
+          }
+          Get-EventSubscriber | Unregister-Event
           Get-ChildItem .\DownloadFiles -File -Recurse | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('\')[-1]}} | Export-Csv -Path .\windows_hash.csv -Encoding UTF8
 
       - uses: actions/upload-artifact@v2
         with:
           name: windows-hash
           path: .\windows_hash.csv
-          
         
