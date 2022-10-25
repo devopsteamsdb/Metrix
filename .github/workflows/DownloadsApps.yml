@@ -53,6 +53,7 @@ jobs:
             $Item = Get-ChildItem .\DownloadApps 
             $Process = Start-Process $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
             Write-Host $($Process.Id)
+            Set-Content .\ProcessId.txt -Value $($Process.Id)
           }
           
       - name: Register Event for monitor directory changes
@@ -79,11 +80,12 @@ jobs:
       - name: Wait for downloads to finishe
         shell: pwsh
         run: |
+          $ProcessId  = Get-Content .\ProcessId.txt
           while ($true) {
-            Start-Sleep 5
+            Start-Sleep 10
             try
             {
-              Get-Process -Id $Process.Id -ErrorAction Stop | Out-Null
+              Get-Process -Id $ProcessId -ErrorAction Stop | Out-Null
             }
             catch
             {
