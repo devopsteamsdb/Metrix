@@ -52,6 +52,7 @@ jobs:
             Start-BitsTransfer $CSV.AppUrl -Destination .\DownloadApps 
             $Item = Get-ChildItem .\DownloadApps 
             $Process = Start-Process $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
+            Write-Host $($Process.Id)
           }
           
       - name: Register Event for monitor directory changes
