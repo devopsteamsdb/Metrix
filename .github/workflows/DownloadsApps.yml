@@ -61,7 +61,7 @@ jobs:
               Start-Sleep 10
               try
               {
-                Get-Process -Id $Process.Id -ErrorAction Stop | Out-Null
+                Get-Process -Id $Process.Id -ErrorAction Stop
                 $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
                 Write-Output "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count)"
               }
