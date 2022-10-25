@@ -10,6 +10,7 @@ on:
     paths-ignore:
       - 'README.md'
       - '.github/workflows/matrix.yml'
+      - '.github/workflows/DownloadsApps.yml'
       - 'Downloads.txt'
       - './docs/*'
       - 'history.txt'
@@ -54,16 +55,20 @@ jobs:
             Start-BitsTransfer $CSV.AppUrl -Destination .\DownloadApps 
             $Item = Get-ChildItem .\DownloadApps
             
+            Get-AuthenticodeSignature -FilePath $Item.FullName | select *
+            
             $Process = Start-Process $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
+            $index = 0
 
-            while ($true) 
+            while ($index -lt $CSV.FilesCount) 
             {
               Start-Sleep 10
               try
               {
-                Get-Process -Id $Process.Id -ErrorAction Stop
                 $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
+                $index = $($measure.Count)
                 Write-Output "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count)"
+                Get-Process -Id $Process.Id -ErrorAction Stop | Out-Null
               }
               catch
               {
