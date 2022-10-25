@@ -86,7 +86,8 @@ jobs:
             try
             {
               Get-Process -Id $ProcessId -ErrorAction Stop | Out-Null
-              Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
+              $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
+              Write-Output "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count)"
             }
             catch
             {
