@@ -47,59 +47,43 @@ jobs:
         shell: pwsh
         run: |
           $ImportCSV = Import-Csv DownloadsApps.csv
+          $allHashFiles = @()
           foreach ($CSV in $ImportCSV)
           {
+            $FileNameForCSV = $CSV.AppUrl.Substring($CSV.AppUrl.LastIndexOf('/') + 1).replace('.','_')
             Start-BitsTransfer $CSV.AppUrl -Destination .\DownloadApps 
-            $Item = Get-ChildItem .\DownloadApps 
+            $Item = Get-ChildItem .\DownloadApps
+            
             $Process = Start-Process -Wait $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
-            Write-Host $($Process.Id)
-            Set-Content .\ProcessId.txt -Value $($Process.Id)
-          }
-          
-      - name: Register Event for monitor directory changes
-        shell: pwsh
-        run: |
-          $filewatcher = New-Object System.IO.FileSystemWatcher
-          $filewatcher.Path = (Get-Item DownloadFiles).FullName
-          $filewatcher.Filter = "*.*"
-          #include subdirectories $true/$false
-          $filewatcher.IncludeSubdirectories = $true
-          $filewatcher.EnableRaisingEvents = $true 
 
-          $writeaction = { 
-            $path = $Event.SourceEventArgs.FullPath
-            $changeType = $Event.SourceEventArgs.ChangeType
-            $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
-            $logline = "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count), $path"
-            Write-Output $logline
-          }
-
-          Get-EventSubscriber  | Unregister-Event
-          Register-ObjectEvent $filewatcher 'Created' -Action $writeaction
-          
-      - name: Wait for downloads to finishe
-        shell: pwsh
-        run: |
-          $ProcessId  = Get-Content .\ProcessId.txt
-          while ($true) {
-            Start-Sleep 10
-            try
+            while ($true) 
             {
-              Get-Process -Id $ProcessId -ErrorAction Stop | Out-Null
-              $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
-              Write-Output "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count)"
-            }
-            catch
-            {
-              Write-Host "Download finished"
-              break
-            }
-          }
-          Get-EventSubscriber | Unregister-Event
-          Get-ChildItem .\DownloadFiles -File -Recurse | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('\')[-1]}} | Export-Csv -Path .\windows_hash.csv -Encoding UTF8
+              Start-Sleep 10
+              try
+              {
+                Get-Process -Id $Process.Id -ErrorAction Stop | Out-Null
+                $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
+                Write-Output "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count)"
+              }
+              catch
+              {
+                Write-Host "Download finished"
+                break
+              }
+            } # While
+            $CSVName = "hash_$($FileNameForCSV).csv"
+            Get-ChildItem .\DownloadFiles -File -Recurse | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('\')[-1]}} | Export-Csv -Path .\$($CSVName) -Encoding UTF8 -NoTypeInformation
+            $allHashFiles += $CSVName
+            write-host "All hashes from file $($CSVName)"
+            Get-Content .\$($CSVName)
+            Remove-Item -Path .\DownloadFiles\* -Recurse -Force
+            Remove-Item -Path .\DownloadApps\* -Recurse -Force
 
+          } # foreach
+          Get-ChildItem -Path .\hash_*.csv | Compress-Archive -DestinationPath .\AllCSVs.zip -Force
+         
       - uses: actions/upload-artifact@v2
         with:
-          name: windows-hash
-          path: .\windows_hash.csv
+          name: AllCSVs
+          path: .\AllCSVs.zip
         
