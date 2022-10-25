@@ -51,7 +51,7 @@ jobs:
           {
             Start-BitsTransfer $CSV.AppUrl -Destination .\DownloadApps 
             $Item = Get-ChildItem .\DownloadApps 
-            $Process = Start-Process $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
+            $Process = Start-Process -Wait $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
             Write-Host $($Process.Id)
             Set-Content .\ProcessId.txt -Value $($Process.Id)
           }
