@@ -71,7 +71,7 @@ jobs:
             $changeType = $Event.SourceEventArgs.ChangeType
             $measure = Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
             $logline = "$(Get-Date), Sum: $(($measure.Sum / 1MB) -as [int] ) MB, Count: $($measure.Count), $path"
-            Write-Host $logline
+            Write-Output $logline
           }
 
           Get-EventSubscriber  | Unregister-Event
@@ -86,6 +86,7 @@ jobs:
             try
             {
               Get-Process -Id $ProcessId -ErrorAction Stop | Out-Null
+              Get-ChildItem .\DownloadFiles -File -Recurse | measure -Sum -Property length
             }
             catch
             {
