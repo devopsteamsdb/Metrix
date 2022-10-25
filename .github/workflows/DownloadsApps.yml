@@ -35,11 +35,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Create download folder
+      - name: Create DownloadFiles folder
         shell: pwsh
         run: new-item DownloadFiles -ItemType directory -ErrorAction SilentlyContinue
 
-      - name: Create download folder
+      - name: Create DownloadApps folder
         shell: pwsh
         run: new-item DownloadApps -ItemType directory -ErrorAction SilentlyContinue
         
@@ -54,7 +54,7 @@ jobs:
             Start-BitsTransfer $CSV.AppUrl -Destination .\DownloadApps 
             $Item = Get-ChildItem .\DownloadApps
             
-            $Process = Start-Process -Wait $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
+            $Process = Start-Process $Item.FullName -ArgumentList $CSV.ArgumentList -PassThru
 
             while ($true) 
             {
