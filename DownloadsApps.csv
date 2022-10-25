@@ -1,2 +1,2 @@
 AppUrl,ArgumentList
-https://download.microsoft.com/download/6/7/4/674ec7db-7c89-4f2b-8363-689055c2b430/adk/adksetup.exe, "/layout ./DownloadFiles"
+https://download.microsoft.com/download/6/7/4/674ec7db-7c89-4f2b-8363-689055c2b430/adk/adksetup.exe, "/layout .\DownloadFiles /quiet"
