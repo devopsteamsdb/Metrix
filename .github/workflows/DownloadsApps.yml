@@ -92,7 +92,6 @@ jobs:
             catch
             {
               Write-Host "Download finished"
-              Get-Process
               break
             }
           }
