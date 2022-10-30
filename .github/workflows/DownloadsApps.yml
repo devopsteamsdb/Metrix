@@ -46,6 +46,10 @@ jobs:
       - name: Create DownloadApps folder
         shell: pwsh
         run: new-item DownloadApps -ItemType directory -ErrorAction SilentlyContinue
+ 
+      - name: Create Artifacts folder
+        shell: pwsh
+        run: new-item Artifacts -ItemType directory -ErrorAction SilentlyContinue
         
       - name: Download files - CSV
         shell: pwsh
@@ -91,11 +95,13 @@ jobs:
             Get-ChildItem .\DownloadFiles | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
             write-host "Finished - Creating artifactor for $($FileNameForCSV)"
             
-            write-host "Start - Upload Realase"
+            write-host "Start - Move to Artifacts"
             $tag = "V_$($FileNameForCSV)_$($env:GITHUB_RUN_NUMBER)"
             dir
+            Get-ChildItem *.zip | Move-Item -Destination .\Artifacts
             #gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
-            write-host "Finished - Upload Realase"
+            dir .\Artifacts
+            write-host "Finished - Move to Artifacts"
             
             write-host "Start - Clean folders"
             Remove-Item -Path .\DownloadFiles\* -Recurse -Force
