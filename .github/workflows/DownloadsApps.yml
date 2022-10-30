@@ -91,6 +91,11 @@ jobs:
             Get-ChildItem .\DownloadFiles | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
             write-host "Finished - Creating artifactor for $($FileNameForCSV)"
             
+            write-host "Start - Upload Realase"
+            $tag = "V_$($FileNameForCSV)_$GITHUB_RUN_NUMBER"
+            gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
+            write-host "Finished - Upload Realase"
+            
             write-host "Start - Clean folders"
             Remove-Item -Path .\DownloadFiles\* -Recurse -Force
             Remove-Item -Path .\DownloadApps\* -Recurse -Force
