@@ -92,7 +92,7 @@ jobs:
             write-host "Finished - Creating artifactor for $($FileNameForCSV)"
             
             write-host "Start - Upload Realase"
-            $tag = "V_$($FileNameForCSV)_$GITHUB_RUN_NUMBER"
+            $tag = "V_$($FileNameForCSV)_$($env:GITHUB_RUN_NUMBER)"
             gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
             write-host "Finished - Upload Realase"
             
