@@ -82,8 +82,10 @@ jobs:
             write-host "All hashes from file $($CSVName)"
             Get-Content .\$($CSVName)
             
+            Write-Host "--------------------------------------------------------"
+            
             write-host "Start - Creating artifactor for $($FileNameForCSV)"
-            Get-ChildItem .\DownloadFiles -Recurse | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
+            Get-ChildItem .\DownloadFiles | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
             write-host "Finished - Creating artifactor for $($FileNameForCSV)"
             
             write-host "Start - Clean fodlers"
