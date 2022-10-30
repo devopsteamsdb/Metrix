@@ -93,7 +93,8 @@ jobs:
             
             write-host "Start - Upload Realase"
             $tag = "V_$($FileNameForCSV)_$($env:GITHUB_RUN_NUMBER)"
-            gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
+            dir
+            #gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
             write-host "Finished - Upload Realase"
             
             write-host "Start - Clean folders"
