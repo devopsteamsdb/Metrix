@@ -81,6 +81,9 @@ jobs:
             $allHashFiles += $CSVName
             write-host "All hashes from file $($CSVName)"
             Get-Content .\$($CSVName)
+            
+            Get-ChildItem .\DownloadFiles -Recurse | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
+            
             Remove-Item -Path .\DownloadFiles\* -Recurse -Force
             Remove-Item -Path .\DownloadApps\* -Recurse -Force
 
@@ -91,4 +94,4 @@ jobs:
         with:
           name: AllCSVs
           path: .\AllCSVs.zip
-        
+     
