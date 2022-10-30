@@ -30,6 +30,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: windows-latest
+    env:
+      # use PAT for all gh commands
+      GITHUB_TOKEN: ${{secrets.PAT}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -88,10 +91,10 @@ jobs:
             Get-ChildItem .\DownloadFiles | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
             write-host "Finished - Creating artifactor for $($FileNameForCSV)"
             
-            write-host "Start - Clean fodlers"
+            write-host "Start - Clean folders"
             Remove-Item -Path .\DownloadFiles\* -Recurse -Force
             Remove-Item -Path .\DownloadApps\* -Recurse -Force
-            write-host "Finished - Clean fodlers"
+            write-host "Finished - Clean folders"
 
           } # foreach
           write-host "Start - Create Zip for all hashes CSVs"
