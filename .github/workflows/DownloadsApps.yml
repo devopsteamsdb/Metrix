@@ -86,24 +86,27 @@ jobs:
             $CSVName = "hash_$($FileNameForCSV).csv"
             Get-ChildItem .\DownloadFiles -File -Recurse | Get-FileHash | Select -Property hash, @{N='File'; E={$_.path.split('\')[-1]}} | Export-Csv -Path .\$($CSVName) -Encoding UTF8 -NoTypeInformation
             $allHashFiles += $CSVName
+
+            Write-Host "--------------------------------------------------------"
             write-host "All hashes from file $($CSVName)"
             Get-Content .\$($CSVName)
             
+            <#            
+              write-host "Start - Creating artifactor for $($FileNameForCSV)"
+              Get-ChildItem .\DownloadFiles | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
+              write-host "Finished - Creating artifactor for $($FileNameForCSV)"
+
+              write-host "Start - Move to Artifacts"
+              $tag = "V_$($FileNameForCSV)_$($env:GITHUB_RUN_NUMBER)"
+              dir
+              Get-ChildItem *.zip | Move-Item -Destination .\Artifacts
+              gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
+              dir .\Artifacts
+              write-host "Finished - Move to Artifacts"
+            #>
+
             Write-Host "--------------------------------------------------------"
-            
-            write-host "Start - Creating artifactor for $($FileNameForCSV)"
-            Get-ChildItem .\DownloadFiles | Compress-Archive -DestinationPath ".\DownloadFiles_$($FileNameForCSV).zip" -Force
-            write-host "Finished - Creating artifactor for $($FileNameForCSV)"
-            
-            write-host "Start - Move to Artifacts"
-            $tag = "V_$($FileNameForCSV)_$($env:GITHUB_RUN_NUMBER)"
-            dir
-            Get-ChildItem *.zip | Move-Item -Destination .\Artifacts
-            #gh release upload $tag ".\DownloadFiles_$($FileNameForCSV).zip"
-            dir .\Artifacts
-            write-host "Finished - Move to Artifacts"
-            
-            write-host "Start - Clean folders"
+            write-host "Start - Clean folders"           
             Remove-Item -Path .\DownloadFiles\* -Recurse -Force
             Remove-Item -Path .\DownloadApps\* -Recurse -Force
             write-host "Finished - Clean folders"
@@ -112,7 +115,16 @@ jobs:
           write-host "Start - Create Zip for all hashes CSVs"
           Get-ChildItem -Path .\hash_*.csv | Compress-Archive -DestinationPath .\AllCSVs.zip -Force
           write-host "Finished - Create Zip for all hashes CSVs"
-         
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: AllCSVs
