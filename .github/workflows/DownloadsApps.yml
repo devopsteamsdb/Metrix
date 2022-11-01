@@ -124,6 +124,7 @@ jobs:
         with:
           tag_name: ${{ github.run_number }}
           release_name: Release ${{ github.run_number }}
+          body_path: DownloadsApps.csv
 
       - name: Upload Release Asset
         id: upload-release-asset 
